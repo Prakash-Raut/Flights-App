@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Airplane {
+  id          String   @id @default(uuid())
+  modelNumber String
+  capacity    Int      @default(200)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Flight      Flight[]
+  Seat        Seat[]
+}
+
+model City {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Airport   Airport[]
+}
+
+model Airport {
+  id               String   @id @default(uuid())
+  name             String   @unique
+  code             String   @unique
+  address          String?  @unique
+  city             City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
+  cityId           String
+  departureFlights Flight[] @relation("DepartureAirport")
+  arrivalFlights   Flight[] @relation("ArrivalAirport")
+}
+
+model Flight {
+  id                 String   @id @default(uuid())
+  flightNumber       String   @unique
+  airplane           Airplane @relation(fields: [airplaneId], references: [id], onDelete: Cascade)
+  airplaneId         String
+  departureAirport   Airport  @relation("DepartureAirport", fields: [departureAirportId], references: [id], onDelete: Cascade)
+  departureAirportId String
+  arrivalAirport     Airport  @relation("ArrivalAirport", fields: [arrivalAirportId], references: [id], onDelete: Cascade)
+  arrivalAirportId   String
+  departureTime      DateTime
+  arrivalTime        DateTime
+  price              Int
+  boardingGate       String
+  totalSeats         Int
+  updatedAt          DateTime @updatedAt
+  createdAt          DateTime @default(now())
+}
+
+enum SeatType {
+  BUSINESS
+  ECONOMY
+  PREMIUM_ECONOMY
+  FIRST_CLASS
+}
+
+model Seat {
+  id         Int      @id @default(autoincrement())
+  airplane   Airplane @relation(fields: [airplaneId], references: [id], onDelete: Cascade)
+  airplaneId String
+  row        Int
+  col        String
+  type       SeatType @default(ECONOMY)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

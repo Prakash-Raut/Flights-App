@@ -1,0 +1,35 @@
+{
+  "name": "booking-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "watch": "npx tsc -w",
+    "prestart": "npm run build",
+    "start": "npx nodemon dist/index.js",
+    "dev": "npx concurrently --kill-others \"npm run watch\" \"npm run start\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.1.0",
+    "@types/node-cron": "^3.0.11",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.17.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "amqplib": "^0.10.4",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "node-cron": "^3.0.3",
+    "zod": "^3.23.8"
+  }
+}
